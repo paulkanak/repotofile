@@ -1,0 +1,54 @@
+Setup — one time
+chmod +x repo2txt.sh
+
+# Optionally move it to your PATH
+mv repo2txt.sh /usr/local/bin/repo2txt
+
+Run it
+./repo2txt.sh -n(dry run) -f <file_name> -d <dir name> -e <file extension name> <repo path>
+
+dry run
+./repo2txt.sh -n /d/DevOps/Projects/Dev_Sec_Ops_Demo 
+
+run with file to exclude (-f)
+./repo2txt.sh -f .checkov.yml -f .gitignore -f .dockerignore -f README.md /d/DevOps/Projects/Dev_Sec_Ops_Demo
+
+run with dir to exclude (-d) / run with file extension to exclude (-e)
+./repo2txt.sh -d frontend -e xml /d/DevOps/Projects/Dev_Sec_Ops_Demo
+
+############
+What the script produces
+The .txt file has three clear sections:
+
+Header — repo name, timestamp, hostname for traceability
+Repository Structure — a full tree-style directory map drawn in pure bash (no tree binary needed)
+File Contents — every file dumped sequentially in this format:
+
+File-Name: packages/app/src/index.ts
+---
+<full file content>
+---
+
+Real-world usage patterns
+
+# Basic — just defaults
+./repo2txt.sh /repos/my-backstage
+
+# Skip test dirs + markdown + .env files
+./repo2txt.sh -d tests -d __tests__ -e md -f .env /repos/my-backstage
+
+# Terraform repo — skip examples, modules, huge plan files
+./repo2txt.sh -d examples -d .terraform -e tfstate -e tfplan /repos/infra
+
+# Backstage monorepo — skip storybook + fixtures + lock files
+./repo2txt.sh -d storybook -d fixtures -e lock -e snap /repos/backstage
+
+# Dry-run first to preview what will be included — no file written
+./repo2txt.sh -n -d tests -e yaml /repos/my-backstage
+
+# Tighten size limit to 100 KB
+./repo2txt.sh -s 100 /repos/my-backstage
+
+
+
+
